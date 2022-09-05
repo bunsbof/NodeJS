@@ -1,9 +1,11 @@
 const express = require("express");
 const app = express();
 const tasks = require("./routes/tasks");
+const connectDB = require("./db/connect");
+require('dotenv').config()
 
 // Middleware
-app.use(express.json())
+app.use(express.json());
 
 // Routes
 app.get("/hello", (req, res) => {
@@ -21,4 +23,14 @@ app.delete('/api/v1/tasks/:id')
 */
 
 const port = 3000;
-app.listen(port, console.log(`server is listening on port ${port} ...`));
+
+const start = async () => {
+  try {
+    await connectDB(process.env.MYSQL_HOST, process.env.MYSQL_USERNAME, process.env.MYSQL_PASSWORD, process.env.DB);
+    app.listen(port, console.log(`server is listening on port ${port} ...`));
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+start();
